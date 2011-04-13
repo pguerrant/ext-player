@@ -1,0 +1,18 @@
+#xap-player .xap-prev {
+    background-image: url('../img/prev.png');
+}
+#xap-player .xap-play {
+    background-image: url('../img/play.png');
+}
+#xap-player .xap-pause {
+    background-image: url('../img/pause.png');
+}
+#xap-player .xap-next {
+    background-image: url('../img/next.png');
+}
+#xap-player .xap-muted {
+    background-image: url('../img/sound_mute.png');
+}
+#xap-player .xap-unmuted {
+    background-image: url('../img/sound.png');
+}

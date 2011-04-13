@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>ExtJs 4 Mp3 Player Demo</title>
+        <link rel="stylesheet" type="text/css" href="lib/ext/resources/css/ext-all.css"/>
+        <link rel="stylesheet" type="text/css" href="src/css/xap.css"/>
+        <script type="text/javascript" src="lib/ext/bootstrap.js"></script>
+        <script type="text/javascript" src="lib/sm2/soundmanager2.js"></script>
+        <script type="text/javascript" src="src/js/Format.js"></script>
+        <script type="text/javascript" src="src/js/Templates.js"></script>
+        <script type="text/javascript" src="src/js/TrackInfo.js"></script>
+        <script type="text/javascript" src="src/js/TrackSlider.js"></script>
+        <script type="text/javascript" src="src/js/VolumeSlider.js"></script>
+        <script type="text/javascript" src="src/js/Track.js"></script>
+        <script type="text/javascript" src="src/js/Playlist.js"></script>
+        <script type="text/javascript" src="src/js/Player.js"></script>
+        <script type="text/javascript">
+
+soundManager.url = 'swf';
+soundManager.debugMode = false;
+soundManager.useHTML5Audio = true
+
+Ext.require('Xap.Player');
+soundManager.onready(function() {
+
+    var player = Ext.create('Xap.Player', {
+        files: [
+            'url1.mp3',
+            'url2.mp3',
+            'url3.mp3'
+        ],
+        autoPlay: true,
+        renderTo: Ext.getBody()
+    });
+
+});
+
+        </script>
+    </head>
+    <body></body>
+</html>
