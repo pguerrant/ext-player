@@ -1,0 +1,40 @@
+<script type="text/javascript" src="http://github.com/pguerrant/ext-player/player.js"></script>
+
+Config options: (can be specified as url params, or a URL to a json object)
+
+    root: 'url', // The root URL containing the mp3s or directories
+    files: [Array], // array of mp3 files. If set to 'scan', scan directory index (apache/nginx/s3)
+    position: 'absolute|block|fixed',
+    top: 0, // for position absolute, fixed
+    left: 0, // for position absolute, fixed
+    right: 0, // for position absolute, fixed
+    bottom: 0, // for position absolute, fixed
+    autoPlay: [boolean], // Start playing on load
+    volume: [integer 0-100],
+    repeat 'track|album|false',
+    closable: [boolean], //show close button
+    collapsible: [boolean], //collapse to a 'mini' version
+    collapsed: [boolean], //Initial collapsed state
+    playlist: [boolean], //Playlist is open or closed on startup
+    lazyLoad: [boolean] //If true, load just enough of each file in playlist to determine id3 info and track length. Wait until track is played to load the entire file
+                        //If false, load all files in playlist up front.
+                        //Lazy loading may result in a perceived performance improvement, although total download size will be greater,
+                        //since player has to load a portion of each file, then stop the download once meta info is retrieved, then when the file is played, redownload the entire file.
+
+
+
+
+todo list:
+
+- implement playlist
+- get volume control to work
+- implement lazy loading - preload only enough of each track to get id3 info and length estimate
+- gracefully handle mp3 urls that return 404
+- create a custom build that only includes the neccessary Ext JS javascipt and css resources
+- combine and compress js
+- "widgetize" the player component
+- theme it!
+
+
+Ideas for enhancements:
+- modify the track slider to show percent loaded in addition to position
