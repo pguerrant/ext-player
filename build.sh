@@ -15,3 +15,6 @@ src/js/Player.js \
 
 # compress player-debug.js to player.js
 java -jar /opt/yuicompressor-2.4.2/build/yuicompressor-2.4.2.jar build/player-debug.js -o build/player.js
+
+# compress xap.css
+java -jar /opt/yuicompressor-2.4.2/build/yuicompressor-2.4.2.jar src/css/player.css -o build/player.css
