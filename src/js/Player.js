@@ -81,7 +81,11 @@ Ext.define('Xap.Player', {
         trackSlider.on('changecomplete', me.onTrackSliderChangeComplete, me);
 
         if(me.files) {
-            me.autoPlay ? me.loadAndPlay(me.files) : me.load(me.files);
+            if(me.autoPlay) {
+                me.loadAndPlay(me.files);
+            } else {
+                me.load(me.files);
+            }
         }
 
     },
@@ -108,7 +112,7 @@ Ext.define('Xap.Player', {
             iconCls: 'xap-unmuted',
             handler: me.toggleMute,
             scope: me
-        })
+        });
         return [
             {
                 tooltip: 'Previous',
@@ -227,7 +231,11 @@ Ext.define('Xap.Player', {
     togglePause: function() {
         var currentTrack = this.currentTrack;
         if(currentTrack) {
-            (currentTrack.playState === 0 || currentTrack.paused) ? this.play() : this.pause();
+            if(currentTrack.playState === 0 || currentTrack.paused) {
+                this.play();
+            } else {
+                this.pause();
+            }
         }
     },
 
