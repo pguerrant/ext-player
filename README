@@ -2,7 +2,8 @@
 
 Config options: (can be specified as url params, or a URL to a json object)
 
-    root: 'url', // The root URL containing the mp3s or directories
+    root: 'url', // The root URL containing the mp3s or directories, if you don't provide a url, player will assume that
+                // all urls in files are fully qualified
     files: [Array], // array of mp3 files. If set to 'scan', scan directory index (apache/nginx/s3)
     position: 'absolute|block|fixed',
     top: 0, // for position absolute, fixed
@@ -30,6 +31,7 @@ todo list:
 - get volume control to work
 - implement lazy loading - preload only enough of each track to get id3 info and length estimate
 - gracefully handle mp3 urls that return 404
+- if root or files param not provided, then run player in "local" mode - prompt user to load files from filesystem
 - create a custom build that only includes the neccessary Ext JS javascipt and css resources
 - combine and compress js
 - "widgetize" the player component
