@@ -17,7 +17,7 @@ Config options: (can be specified as url params, or a URL to a json object)
     collapsible: [boolean], //collapse to a 'mini' version
     collapsed: [boolean], //Initial collapsed state
     playlist: [boolean], //Playlist is open or closed on startup
-    lazyLoad: [boolean] //If true, load just enough of each file in playlist to determine id3 info and track length. Wait until track is played to load the entire file
+    lazy: [boolean] //If true, load just enough of each file in playlist to determine id3 info and track length. Wait until track is played to load the entire file
                         //If false, load all files in playlist up front.
                         //Lazy loading may result in a perceived performance improvement, although total download size will be greater,
                         //since player has to load a portion of each file, then stop the download once meta info is retrieved, then when the file is played, redownload the entire file.
@@ -28,12 +28,10 @@ Config options: (can be specified as url params, or a URL to a json object)
 todo list:
 
 - implement playlist
-- get volume control to work
-- implement lazy loading - preload only enough of each track to get id3 info and length estimate
 - gracefully handle mp3 urls that return 404
 - if root or files param not provided, then run player in "local" mode - prompt user to load files from filesystem
+- fix button bug - in Firefox play/pause/next/prev buttons remain focused after clicking them.  If you press space or enter on a focused button it has the same effect as clicking the button.
 - create a custom build that only includes the neccessary Ext JS javascipt and css resources
-- combine and compress js
 - "widgetize" the player component
 - theme it!
 

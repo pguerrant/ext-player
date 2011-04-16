@@ -359,7 +359,7 @@ Ext.define('Xap.Player', {
         me.updateTrackInfoDisplay();
         if(smSound.loaded) {
             me.updateTrackLengthFinal();
-        } else if(smSound.isBuffering) {
+        } else {
             me.updateTrackLengthEstimate();
         }
         // when playing a new track volume defaults to 100, so we need to set it to the value of the volume slider
@@ -434,7 +434,8 @@ Ext.define('Xap.Player', {
 
     // private
     updateTrackLengthEstimate: function() {
-        this.updateTrackLength(this.getCurrentSmSound().durationEstimate);
+        // in Sound Manager 2 durationEstiamte can be NaN, so fallback to zero
+        this.updateTrackLength(this.getCurrentSmSound().durationEstimate || 0);
     },
 
     // private

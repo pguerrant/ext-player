@@ -6,7 +6,7 @@ Ext.ns('Xap').Templates = {
         '<p class="xap-time-total">{timeTotal:this.formatTime}</p>',
         {
             formatTime: function(value) {
-                return Xap.Format.formatTime(value);
+                return Xap.Format.formatTime(value || 0);
             }
         }
     )
