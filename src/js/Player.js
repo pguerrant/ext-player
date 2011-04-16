@@ -363,7 +363,7 @@ Ext.define('Xap.Player', {
         me.currentTrackIndex = index;
         smSound = me.getCurrentSmSound();  // get the smSound at the new index
         smSound.load();
-        me.updateTrackPosition();
+        me.updateTrackPosition(0);
         me.updateTrackInfo();
         if(smSound.loaded) {
             me.updateTrackLengthFinal();
@@ -417,8 +417,10 @@ Ext.define('Xap.Player', {
     },
 
     // private
-    updateTrackPosition: function() {
-        var position = this.getCurrentSmSound().position;
+    updateTrackPosition: function(position) {
+        if(!Ext.isNumber(position)) {
+            position = this.getCurrentSmSound().position;
+        }
         if(!this.isSliderDragging) {
             this.trackInfo.set({timeElapsed: position});
             this.trackSlider.setValue(position);
