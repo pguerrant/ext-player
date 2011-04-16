@@ -391,7 +391,7 @@ Ext.define('Xap.Player', {
                 // this changes the scope to the current "Player" instance and passes the sm2 sound as the 1st arg
                 return function() {
                     fn.call(me, this);
-                }
+                };
             };
 
         return soundManager.createSound({
