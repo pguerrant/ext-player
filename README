@@ -12,7 +12,7 @@ Config options: (can be specified as url params, or a URL to a json object)
     bottom: 0, // for position absolute, fixed
     autoPlay: [boolean], // Start playing on load
     volume: [integer 0-100],
-    repeat 'track|album|false',
+    repeat '[boolean]', // true to repeat the playlist from the beginning after the last track is finished playing
     closable: [boolean], //show close button
     collapsible: [boolean], //collapse to a 'mini' version
     collapsed: [boolean], //Initial collapsed state

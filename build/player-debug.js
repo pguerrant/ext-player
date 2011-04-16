@@ -86297,6 +86297,12 @@ Ext.define('Xap.Player', {
      * automatically when the player is initialized. Defaults to false.
      */
 
+    /**
+     * @cfg {Boolean} repeat
+     * If true, player will continue to repeat the playlist until stopped by the user.
+     * Defaults to false.
+     */
+
     height: 120,
     width: 300,
     id: 'xap-player',
@@ -86306,7 +86312,17 @@ Ext.define('Xap.Player', {
     initComponent: function() {
         var me = this,
             trackInfo = new Xap.TrackInfo(),
-            trackSlider = new Xap.TrackSlider();
+            trackSlider = new Xap.TrackSlider({
+                listeners: {
+                    // disabling the track slider on render since the "disabled" configuration
+                    // doesn't work on sliders as of Ext JS 4 Beta 2  4/10/2011
+                    // http://www.sencha.com/forum/showthread.php?130022-Ext.slider.Single-throws-an-error-when-initialized-with-quot-disabled-quot-configuration&p=590568#post590568
+                    // TODO: move this to initial config when this is fixed.
+                    render: {fn: me.disableSlider, scope: me},
+                    dragstart: {fn: me.onTrackSliderDragStart, scope: me},
+                    changecomplete: {fn: me.onTrackSliderChangeComplete, scope: me}
+                }
+            });
 
         Ext.apply(me, {
             trackInfo: trackInfo,
@@ -86322,14 +86338,6 @@ Ext.define('Xap.Player', {
         });
         me.callParent(arguments);
 
-        // disabling the track slider on render since the "disabled" configuration
-        // doesn't work on sliders as of Ext JS 4 Beta 2  4/10/2011
-        // http://www.sencha.com/forum/showthread.php?130022-Ext.slider.Single-throws-an-error-when-initialized-with-quot-disabled-quot-configuration&p=590568#post590568
-        // TODO: move this to initial config when this is fixed.
-        trackSlider.on('render', me.disableSlider, me);
-        trackSlider.on('dragstart', me.onTrackSliderDragStart, me);
-        trackSlider.on('changecomplete', me.onTrackSliderChangeComplete, me);
-
         if(me.files) {
             if(me.autoPlay) {
                 me.loadAndPlay(me.files);
@@ -86344,40 +86352,48 @@ Ext.define('Xap.Player', {
     initBottomBar: function() {
         var me = this,
             Button = Ext.button.Button,
-            volumeSlider = this.volumeSlider = new Xap.VolumeSlider();
-
-        // disabling the volume slider on render since the "disabled" configuration
-        // doesn't work on sliders as of Ext JS 4 Beta 2  4/10/2011
-        // http://www.sencha.com/forum/showthread.php?130022-Ext.slider.Single-throws-an-error-when-initialized-with-quot-disabled-quot-configuration&p=590568#post590568
-        // TODO: move this to initial config when this is fixed.
-        volumeSlider.on('render', me.disableSlider, me);
-        me.playButton = new Button({
-            tooltip: 'Play|Pause',
-            iconCls: 'xap-play',
-            handler: me.togglePause,
-            scope: me
-        });
-        me.muteButton = new Button({
-            tooltip: 'Mute|Unmute',
-            iconCls: 'xap-unmuted',
-            handler: me.toggleMute,
-            scope: me
-        });
-        return [
-            {
+            volumeChangeHandler = me.onVolumeSliderChange,
+            volumeSlider = me.volumeSlider = new Xap.VolumeSlider({
+                value: me.volume,
+                listeners: {
+                    // disabling the volume slider on render since the "disabled" configuration
+                    // doesn't work on sliders as of Ext JS 4 Beta 2  4/10/2011
+                    // http://www.sencha.com/forum/showthread.php?130022-Ext.slider.Single-throws-an-error-when-initialized-with-quot-disabled-quot-configuration&p=590568#post590568
+                    // TODO: move this to initial config when this is fixed.
+                    render: {fn: me.disableSlider, scope: me},
+                    drag: {fn: volumeChangeHandler, scope: me},
+                    changecomplete: {fn: volumeChangeHandler, scope: me}
+                }
+            }),
+            playButton = me.playButton = new Button({
+                tooltip: 'Play|Pause',
+                iconCls: 'xap-play',
+                handler: me.togglePause,
+                scope: me
+            }),
+            muteButton = me.muteButton = new Button({
+                tooltip: 'Mute|Unmute',
+                iconCls: 'xap-unmuted',
+                handler: me.toggleMute,
+                scope: me
+            }),
+            prevButton = me.prevButton = new Button({
                 tooltip: 'Previous',
                 iconCls: 'xap-prev',
-                handler: me.playPrev,
+                handler: me.movePrev,
                 scope: me
-            },
-            me.playButton,
-            {
+            }),
+            nextButton = me.nextButton = new Button({
                 tooltip: 'Next',
                 iconCls: 'xap-next',
-                handler: me.playNext,
+                handler: me.moveNext,
                 scope: me
-            },
-            me.muteButton,
+            });
+        return [
+            prevButton,
+            playButton,
+            nextButton,
+            muteButton,
             volumeSlider
         ];
     },
@@ -86387,11 +86403,14 @@ Ext.define('Xap.Player', {
      * @param {Array} files An array of file urls
      */
     loadAndPlay: function(files) {
-        this.load(files);
-        // setting current track here since the call to "load" sets it to the first track
+        var me = this,
+            trackCount = me.store.getCount();
+        me.load(files);
+        // setting current track index here since the call to "load" sets it to the first track
         // in the playlist, when what we want is the first track in the files array that was passed in.
-        this.currentTrack = soundManager.getSoundById(files[0]);
-        this.play();
+        //me.currentTrackIndex = trackCount;
+        me.moveTo(trackCount);
+        me.play();
     },
 
     /**
@@ -86400,7 +86419,8 @@ Ext.define('Xap.Player', {
      */
     load: function(files) {
         var me = this,
-            bind = Ext.Function.bind;
+            bind = Ext.Function.bind,
+            currentTrackIndex = me.currentTrackIndex;
 
         Ext.Array.forEach(files, function(url) {
             // create a SoundManager Sound object and add it to the store
@@ -86417,7 +86437,7 @@ Ext.define('Xap.Player', {
         });
         // Set the current track to the first track in the store, unless, of course we already have a current track.
         // This allows you to call "load" repeatedly to add additional files without changing the file that is currently being played
-        me.currentTrack = me.currentTrack || me.store.getAt(0).get('smSound');
+        me.currentTrackIndex = Ext.isNumber(currentTrackIndex) ? currentTrackIndex : 0;
         // enable sliders
         me.trackSlider.enable();
         me.volumeSlider.enable();
@@ -86432,7 +86452,7 @@ Ext.define('Xap.Player', {
     unload: function(files) {
         var me = this,
             store = me.store,
-            record, index, smSound;
+            index;
 
         if(!files) {
             // if no files were passed, remove all tracks in the store by calling unload recursively
@@ -86447,30 +86467,25 @@ Ext.define('Xap.Player', {
             });
         }
         // if we got here "files" is a string referring to a single file url
-        record = store.findRecord('url', files, 0, false, true, true);
-        index = store.indexOf(record);
-        smSound = record.get('smSound');
-        if(smSound === me.currentTrack) {
-            // special handling if we unloaded the current track:
-            // if current track is last in the playlist, then use the one before it as the current track
-            // otherwise use the one after"
-            me.currentTrack = (record === store.last())
-                ? store.getAt(index - 1).get('smSound')
-                : store.getAt(index + 1).get('smSound');
-            me.updateTrackInfo();
-            // if the old current track was playing when we removed it, then start playing the new current track immediately.
-            // unless of course we removed the last track in the playlist, then there's nothing after it to play
-            if(smSound.playState === 1 && !smSound.paused && record !== store.last()) {
-                me.currentTrack.play();
-            }
+        index = store.find('url', files, 0, false, true, true);
+        if(index === me.currentTrackIndex) {
+            // if we're unloading the current track lets move to the next track before we destroy the current one
+            me.moveNext();
+            // decrement the current index since the track we just moved to will now be the current track
+            // unless, of course we looped around to the first track when we called moveNext
+            me.currentTrackIndex = Math.min(me.currentTrackIndex - 1, 0);
+        }
+        if(index < me.currentTrackIndex) {
+            // if the track we are unloading is before the current track, we need to decrement the currentTrackIndex
+            me.currentTrackIndex --;
         }
         // destroy the sm2 sound object
-        smSound.destruct();
+        store.getAt(index).get('smSound').destruct();
         // remove the track from the store
-        store.remove(record);
+        store.removeAt(index);
         if(store.getCount() === 0) {
             // disable the sliders if our playlist is empty, since they're useless without a current track
-            //this.trackSlider.disable();
+            this.trackSlider.disable();
             this.volumeSlider.disable();
         }
     },
@@ -86479,9 +86494,9 @@ Ext.define('Xap.Player', {
      * Pauses/resumes play of current track
      */
     togglePause: function() {
-        var currentTrack = this.currentTrack;
-        if(currentTrack) {
-            if(currentTrack.playState === 0 || currentTrack.paused) {
+        var smSound = this.getCurrentSmSound();
+        if(smSound) {
+            if(smSound.playState === 0 || smSound.paused) {
                 this.play();
             } else {
                 this.pause();
@@ -86493,9 +86508,9 @@ Ext.define('Xap.Player', {
      * Pauses the currently playing track
      */
     pause: function() {
-        var currentTrack = this.currentTrack;
-        if(currentTrack) {
-            currentTrack.pause();
+        var smSound = this.getCurrentSmSound();
+        if(smSound) {
+            smSound.pause();
             this.playButton.setIconClass('xap-play');
         }
     },
@@ -86504,25 +86519,131 @@ Ext.define('Xap.Player', {
      * Plays the current track
      */
     play: function() {
-        var currentTrack = this.currentTrack;
-        if(currentTrack) {
-            currentTrack.play();
+        var smSound = this.getCurrentSmSound();
+        if(smSound) {
+            smSound.play();
             this.playButton.setIconClass('xap-pause');
         }
+    },
+
+    /**
+     * Stops the current track
+     */
+    stop: function() {
+        var smSound = this.getCurrentSmSound();
+        if(smSound) {
+            smSound.stop();
+        }
+    },
+
+    /**
+     * Mutes the current track
+     */
+    mute: function() {
+        this.getCurrentSmSound().mute();
+        this.muteButton.setIconClass('xap-muted');
+    },
+
+    /**
+     * Unmutes the current track
+     */
+    unmute: function() {
+        this.getCurrentSmSound().unmute();
+        this.muteButton.setIconClass('xap-unmuted');
     },
 
     /**
      * Toggles track between muted and unmuted
      */
     toggleMute: function() {
-        var currentTrack = this.currentTrack;
-        currentTrack.toggleMute();
-        this.muteButton.setIconClass(currentTrack.muted ? 'xap-muted' : 'xap-unmuted');
+        if(this.getCurrentSmSound().muted) {
+            this.unmute();
+        } else {
+            this.mute();
+        }
+    },
+
+    /**
+     * Moves to the previous track in the playlist.  If we are currently on the first track, and {@link #repeat}
+     * is true, then moves to the last track.  The current play state stays the same.
+     */
+    movePrev: function() {
+        var me = this,
+            currentTrackIndex = me.currentTrackIndex;
+
+        if(currentTrackIndex === 0) {
+            if(me.repeat) {
+                me.moveTo(me.store.getCount() - 1);
+            }
+        } else {
+            me.moveTo(currentTrackIndex - 1);
+        }
+    },
+
+    /**
+     * Moves to the next track in the playlist.  If we are currently on the last track, and {@link #repeat}
+     * is true, then moves to the first track.  The current play state stays the same.
+     */
+    moveNext: function() {
+        var me = this,
+            currentTrackIndex = me.currentTrackIndex;
+
+        if(currentTrackIndex === me.store.getCount() - 1) {
+            if(me.repeat) {
+                me.moveTo(0);
+            }
+        } else {
+            me.moveTo(currentTrackIndex + 1);
+        }
+    },
+
+    /**
+     * Moves to the track at a given index. The current play state stays the same.
+     * @param {Number} index
+     */
+    moveTo: function(index) {
+        var me = this,
+            smSound = me.getCurrentSmSound(),
+            isPlaying = smSound && (smSound.playState === 1 && !smSound.paused),
+            isMuted = smSound && (smSound.muted),
+            prevButton = me.prevButton,
+            nextButton = me.nextButton;
+
+        me.stop();
+        me.currentTrackIndex = index;
+        smSound = me.getCurrentSmSound();  // get the smSound at the new index
+        smSound.load();
+        me.updateTrackPosition();
+        me.updateTrackInfo();
+        if(smSound.loaded) {
+            me.updateTrackLengthFinal();
+        } else if(smSound.isBuffering) {
+            me.updateTrackLengthEstimate();
+        }
+        // when playing a new track volume defaults to 100, so we need to set it to the value of the volume slider
+        me.onVolumeSliderChange(me.volumeSlider);
+        if(!me.repeat) {
+            // if we're not in repeat mode disable the prev button if current track is the first, or next button if it is the last
+            if(index === 0) {
+                prevButton.disable();
+            } else if(index === me.store.getCount() - 1) {
+                nextButton.disable();
+            } else {
+                prevButton.enable();
+                nextButton.enable();
+            }
+        }
+        if(isMuted) {
+            me.mute();
+        }
+        if(isPlaying) {
+           me.play();
+        }
     },
 
     // private
     updateTrackInfo: function() {
-        var info = this.currentTrack.id3;
+        var info = this.getCurrentSmSound().id3;
         this.trackInfo.set({
             artist: info.TPE1,
             title: info.TIT2
@@ -86531,12 +86652,12 @@ Ext.define('Xap.Player', {
 
     // private
     updateTrackLengthEstimate: function() {
-        this.updateTrackLength(this.currentTrack.durationEstimate);
+        this.updateTrackLength(this.getCurrentSmSound().durationEstimate);
     },
 
     // private
     updateTrackLengthFinal: function() {
-        this.updateTrackLength(this.currentTrack.duration);
+        this.updateTrackLength(this.getCurrentSmSound().duration);
     },
 
     // private
@@ -86547,7 +86668,7 @@ Ext.define('Xap.Player', {
 
     // private
     updateTrackPosition: function() {
-        var position = this.currentTrack.position;
+        var position = this.getCurrentSmSound().position;
         if(!this.isSliderDragging) {
             this.trackInfo.set({timeElapsed: position});
             this.trackSlider.setValue(position);
@@ -86562,7 +86683,14 @@ Ext.define('Xap.Player', {
     // private
     onTrackSliderChangeComplete: function(slider) {
         this.isSliderDragging = false;
-        this.currentTrack.setPosition(slider.getValue());
+        this.getCurrentSmSound().setPosition(slider.getValue());
+    },
+
+    // private
+    onVolumeSliderChange: function(slider) {
+        var smSound = this.getCurrentSmSound();
+        smSound.setVolume(slider.getValue());
+        this.unmute();
     },
 
     // private
@@ -86574,9 +86702,15 @@ Ext.define('Xap.Player', {
     disableSlider: function(slider) {
         // TODO: move disabling of sliders to initial config once the slider bug is fixed
         // Won't need to check for current track if we use initial config
-        if(!this.currentTrack) {
+        if(!this.getCurrentSmSound()) {
             slider.disable();
         }
+    },
+
+    // private
+    getCurrentSmSound: function(){
+        var currentTrack = this.store.getAt(this.currentTrackIndex);
+        return currentTrack ? currentTrack.get('smSound') : null;
     }
 
 });
