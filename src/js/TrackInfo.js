@@ -2,7 +2,7 @@
  * @class Xap.TrackInfo
  * @extends Ext.panel.Panel
 
-A panel that displays info about an audio track
+A panel that displays id3 info about an audio track, as well as track length and position info.
 
  * @constructor
  * Create a new track info panel
