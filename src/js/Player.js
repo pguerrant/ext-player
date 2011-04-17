@@ -98,14 +98,6 @@ Ext.define('Xap.Player', {
         });
         me.callParent(arguments);
 
-        if(me.files) {
-            if(me.autoPlay) {
-                me.loadAndPlay(me.files);
-            } else {
-                me.load(me.files);
-            }
-        }
-
     },
 
     // private
@@ -173,6 +165,12 @@ Ext.define('Xap.Player', {
             playlist = me.playlist = Ext.create('Xap.Playlist',
                 Ext.apply(me.playlistConfig || {}, {
                     store: me.store,
+                    listeners: {
+                        trackSelect: {
+                            fn: me.moveTo,
+                            scope: me
+                        }
+                    },
                     renderTo: el.parent()
                 })
             );
@@ -183,6 +181,15 @@ Ext.define('Xap.Player', {
         }
         // for floating mode
         playlist.alignTo(el, 'tl-bl');
+
+        if(me.files) {
+            if(me.autoPlay) {
+                me.loadAndPlay(me.files);
+            } else {
+                me.load(me.files);
+            }
+        }
+
     },
 
     /**
@@ -205,8 +212,7 @@ Ext.define('Xap.Player', {
      * @param {Array} files An array of file urls
      */
     load: function(files) {
-        var me = this,
-            currentTrackIndex = me.currentTrackIndex;
+        var me = this;
 
         Ext.Array.forEach(files, function(url) {
             // create a SoundManager Sound object and add it to the store
@@ -216,7 +222,9 @@ Ext.define('Xap.Player', {
         });
         // Set the current track to the first track in the store, unless, of course we already have a current track.
         // This allows you to call "load" repeatedly to add additional files without changing the file that is currently being played
-        me.currentTrackIndex = Ext.isNumber(currentTrackIndex) ? currentTrackIndex : 0;
+        if(!Ext.isNumber(me.currentTrackIndex)) {
+            me.moveTo(0);
+        }
         // enable sliders
         me.trackSlider.enable();
         me.volumeSlider.enable();
@@ -345,6 +353,7 @@ Ext.define('Xap.Player', {
     /**
      * Moves to the previous track in the playlist.  If we are currently on the first track, and {@link #repeat}
      * is true, then moves to the last track.  The current play state stays the same.
+     * @return {Boolean} true if successful
      */
     movePrev: function() {
         var me = this,
@@ -353,15 +362,19 @@ Ext.define('Xap.Player', {
         if(currentTrackIndex === 0) {
             if(me.repeat) {
                 me.moveTo(me.store.getCount() - 1);
+            } else {
+                return false;
             }
         } else {
             me.moveTo(currentTrackIndex - 1);
         }
+        return true;
     },
 
     /**
      * Moves to the next track in the playlist.  If we are currently on the last track, and {@link #repeat}
      * is true, then moves to the first track.  The current play state stays the same.
+     * @return {Boolean} true if successful
      */
     moveNext: function() {
         var me = this,
@@ -370,10 +383,13 @@ Ext.define('Xap.Player', {
         if(currentTrackIndex === me.store.getCount() - 1) {
             if(me.repeat) {
                 me.moveTo(0);
+            } else {
+                return false;
             }
         } else {
             me.moveTo(currentTrackIndex + 1);
         }
+        return true;
     },
 
     /**
@@ -405,8 +421,10 @@ Ext.define('Xap.Player', {
             // if we're not in repeat mode disable the prev button if current track is the first, or next button if it is the last
             if(index === 0) {
                 prevButton.disable();
+                nextButton.enable();
             } else if(index === me.store.getCount() - 1) {
                 nextButton.disable();
+                prevButton.enable();
             } else {
                 prevButton.enable();
                 nextButton.enable();
@@ -418,6 +436,7 @@ Ext.define('Xap.Player', {
         if(isPlaying) {
            me.play();
         }
+        me.playlist.moveTo(index);
     },
 
     // private
@@ -459,7 +478,7 @@ Ext.define('Xap.Player', {
     // private
     onId3: function(smSound) {
         // save the id3 info to the record in the store
-        var record = this.getTrackById(smSound.sID)
+        var record = this.getTrackById(smSound.sID);
         record.set(this.getId3Info(smSound));
         record.commit();
         if(this.isCurrentSmSound(smSound)) {
@@ -537,8 +556,14 @@ Ext.define('Xap.Player', {
     },
 
     // private
-    onTrackFinish: function() {
-        this.playButton.setIconClass('xap-play');
+    onTrackFinish: function(smSound) {
+        var me = this;
+        if(me.moveNext()) {
+            me.play();
+        } else {
+            me.moveTo(0);
+            me.playButton.setIconClass('xap-play');
+        }
     },
 
     // private
