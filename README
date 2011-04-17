@@ -16,7 +16,8 @@ Config options: (can be specified as url params, or a URL to a json object)
     closable: [boolean], //show close button
     collapsible: [boolean], //collapse to a 'mini' version
     collapsed: [boolean], //Initial collapsed state
-    playlist: [boolean], //Playlist is open or closed on startup
+    showPlaylist: [boolean], //Playlist is open or closed on startup
+    playlistMode: [inline|floating],
     lazy: [boolean] //If true, load just enough of each file in playlist to determine id3 info and track length. Wait until track is played to load the entire file
                         //If false, load all files in playlist up front.
                         //Lazy loading may result in a perceived performance improvement, although total download size will be greater,
@@ -30,7 +31,12 @@ todo list:
 - implement playlist
 - gracefully handle mp3 urls that return 404
 - if root or files param not provided, then run player in "local" mode - prompt user to load files from filesystem
+- implement floating vs inline playlist.
+- add ability to configure playlist position.
+- test player as a child component in a larger Ext layout, and rendered directly to the dom.
 - fix button bug - in Firefox play/pause/next/prev buttons remain focused after clicking them.  If you press space or enter on a focused button it has the same effect as clicking the button.
+- add some events to the player in case someone wants to use it in a larger application
+- disable prev/next on initial load
 - create a custom build that only includes the neccessary Ext JS javascipt and css resources
 - "widgetize" the player component
 - theme it!

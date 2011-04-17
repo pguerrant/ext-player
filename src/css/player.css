@@ -16,3 +16,9 @@
 #xap-player .xap-unmuted {
     background-image: url('../img/sound.png');
 }
+#xap-player .xap-arrow-down {
+    background-image: url('../img/bullet_arrow_down.png');
+}
+#xap-player .xap-arrow-up {
+    background-image: url('../img/bullet_arrow_up.png');
+}

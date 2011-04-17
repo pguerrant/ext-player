@@ -53,6 +53,16 @@ Ext.define('Xap.Player', {
      * Defaults to false.
      */
 
+    /**
+     * @cfg {Object} playlistConfig
+     * A playlist config object
+     */
+
+    /**
+     * @cfg {Boolean} showPlaylist
+     * True to show playlist at startup
+     */
+
     height: 120,
     width: 300,
     id: 'xap-player',
@@ -102,18 +112,11 @@ Ext.define('Xap.Player', {
     initBottomBar: function() {
         var me = this,
             Button = Ext.button.Button,
-            volumeChangeHandler = me.onVolumeSliderChange,
-            volumeSlider = me.volumeSlider = new Xap.VolumeSlider({
-                value: me.volume,
-                listeners: {
-                    // disabling the volume slider on render since the "disabled" configuration
-                    // doesn't work on sliders as of Ext JS 4 Beta 2  4/10/2011
-                    // http://www.sencha.com/forum/showthread.php?130022-Ext.slider.Single-throws-an-error-when-initialized-with-quot-disabled-quot-configuration&p=590568#post590568
-                    // TODO: move this to initial config when this is fixed.
-                    render: {fn: me.disableSlider, scope: me},
-                    drag: {fn: volumeChangeHandler, scope: me},
-                    changecomplete: {fn: volumeChangeHandler, scope: me}
-                }
+            playlistButton = me.playlistButton = new Button({
+                tooltip: 'Playlist',
+                iconCls: 'xap-arrow-up',
+                handler: me.togglePlaylist,
+                scope: me
             }),
             playButton = me.playButton = new Button({
                 tooltip: 'Play|Pause',
@@ -138,14 +141,48 @@ Ext.define('Xap.Player', {
                 iconCls: 'xap-next',
                 handler: me.moveNext,
                 scope: me
+            }),
+            volumeChangeHandler = me.onVolumeSliderChange,
+            volumeSlider = me.volumeSlider = new Xap.VolumeSlider({
+                value: me.volume,
+                listeners: {
+                    // disabling the volume slider on render since the "disabled" configuration
+                    // doesn't work on sliders as of Ext JS 4 Beta 2  4/10/2011
+                    // http://www.sencha.com/forum/showthread.php?130022-Ext.slider.Single-throws-an-error-when-initialized-with-quot-disabled-quot-configuration&p=590568#post590568
+                    // TODO: move this to initial config when this is fixed.
+                    render: {fn: me.disableSlider, scope: me},
+                    drag: {fn: volumeChangeHandler, scope: me},
+                    changecomplete: {fn: volumeChangeHandler, scope: me}
+                }
             });
+
         return [
+            playlistButton,
             prevButton,
             playButton,
             nextButton,
             muteButton,
             volumeSlider
         ];
+    },
+
+    // private
+    afterRender: function() {
+        var me = this,
+            el = me.getEl(),
+            playlist = me.playlist = Ext.create('Xap.Playlist',
+                Ext.apply(me.playlistConfig || {}, {
+                    store: me.store,
+                    renderTo: el.parent()
+                })
+            );
+
+        me.callParent(arguments);
+        if(!me.showPlaylist) {
+            me.togglePlaylist();
+        }
+        // for floating mode
+        playlist.alignTo(el, 'tl-bl');
     },
 
     /**
@@ -422,7 +459,9 @@ Ext.define('Xap.Player', {
     // private
     onId3: function(smSound) {
         // save the id3 info to the record in the store
-        this.getTrackById(smSound.sID).set(this.getId3Info(smSound));
+        var record = this.getTrackById(smSound.sID)
+        record.set(this.getId3Info(smSound));
+        record.commit();
         if(this.isCurrentSmSound(smSound)) {
             this.updateTrackInfoDisplay();
         } else if(this.lazy) {
@@ -530,6 +569,21 @@ Ext.define('Xap.Player', {
     // private
     getTrackIndexById: function(id) {
         return this.store.find('url', id, 0, false, true, true);
+    },
+
+    // private
+    togglePlaylist: function() {
+        var me = this,
+            playlist = me.playlist,
+            playlistButton = me.playlistButton;
+
+        if(playlist.isHidden()) {
+            playlist.show();
+            playlistButton.setIconClass('xap-arrow-up');
+        } else {
+            playlist.hide();
+            playlistButton.setIconClass('xap-arrow-down');
+        }
     }
 
 });
