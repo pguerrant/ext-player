@@ -65,7 +65,7 @@ Ext.define('Xap.Player', {
 
     height: 120,
     width: 300,
-    id: 'xap-player',
+    cls: 'xap-player',
     layout: 'anchor',
 
     // private
@@ -411,9 +411,9 @@ Ext.define('Xap.Player', {
         me.updateTrackPosition(0);
         me.updateTrackInfoDisplay();
         if(smSound.loaded) {
-            me.updateTrackLengthFinal();
+            me.setTrackDuration(smSound, true);
         } else {
-            me.updateTrackLengthEstimate();
+            me.setTrackDuration(smSound);
         }
         // when playing a new track volume defaults to 100, so we need to set it to the value of the volume slider
         me.onVolumeSliderChange(me.volumeSlider);
@@ -471,7 +471,8 @@ Ext.define('Xap.Player', {
         var info = smSound.id3;
         return {
             artist: info.TPE1,
-            title: info.TIT2
+            title: info.TIT2,
+            album: info.TALB
         };
     },
 
@@ -491,32 +492,30 @@ Ext.define('Xap.Player', {
     },
 
     // private
-    updateTrackLengthEstimate: function() {
-        // in Sound Manager 2 durationEstiamte can be NaN, so fallback to zero
-        this.updateTrackLength(this.getCurrentSmSound().durationEstimate || 0);
-    },
-
-    // private
-    updateTrackLengthFinal: function() {
-        this.updateTrackLength(this.getCurrentSmSound().duration);
-    },
-
-    // private
     onWhileLoading: function(smSound) {
-        if(this.isCurrentSmSound(smSound)) {
-            this.updateTrackLengthEstimate();
-        }
+        this.setTrackDuration(smSound);
     },
 
     // private
     onLoad: function(smSound) {
+        this.setTrackDuration(smSound, true);
+    },
+
+    // private
+    setTrackDuration: function(smSound, isFinal) {
+        // in Sound Manager 2 durationEstiamte can be NaN, so fallback to zero if we don't have a duration estimate
+        var duration = isFinal ? smSound.duration : smSound.durationEstimate || 0,
+            record = this.getTrackById(smSound.sID);
+
+        record.set({duration: duration});
+        record.commit();
         if(this.isCurrentSmSound(smSound)) {
-            this.updateTrackLengthFinal();
+            this.updateTrackDurationDisplay(duration);
         }
     },
 
     // private
-    updateTrackLength: function(duration) {
+    updateTrackDurationDisplay: function(duration) {
         this.trackInfo.set({timeTotal: duration});
         this.trackSlider.setMaxValue(duration);
     },

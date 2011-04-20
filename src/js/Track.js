@@ -1,3 +1,3 @@
 Ext.regModel('Track', {
-    fields: ['url', 'artist', 'title', 'smSound']
+    fields: ['url', 'artist', 'title', 'duration', 'album', 'smSound']
 });
