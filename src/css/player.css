@@ -1,3 +1,10 @@
+/*
+ * Ext Audio Player
+ */
+.xap-player {
+    border: 1px solid #808080;
+    font-family: helvetica, arial;
+}
 .xap-player .x-panel-body {
     border: none;
     background-color: #626566;
@@ -7,19 +14,53 @@
     background-color: #626566;
     border: 0;
 }
-.xap-playlist .x-panel-body {
-    border: none;
-}
-.xap-player,
-.xap-playlist {
-    border: 1px solid #808080;
-    font-family: helvetica, arial;
-}
-
 .xap-player .x-btn-toolbar {
     background: transparent;
     border: 0;
 }
+
+/*
+ * Track Info Panel
+ */
+.xap-trackinfo .x-panel-body {
+    background-color: #FEFFE5;
+    color: #5B5D35;
+    border: 4px solid #161616;
+    font-weight: bold;
+    font-size: 11px;
+}
+.xap-time-elapsed,
+.xap-id3,
+.xap-time-total {
+    float: left;
+    text-align: center;
+}
+.xap-time-elapsed,
+.xap-time-total {
+    width: 40px;
+    margin-top: 16px;
+}
+.xap-id3 {
+    margin-top: 8px;
+    width: 210px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+/*
+ * All of the buttons, slider backgrounds and slider thumbs use the same sprite
+ */
+.xap-player button,
+.xap-player .x-slider-horz,
+.xap-player .x-slider-horz .x-slider-thumb,
+.xap-player .x-slider-horz .x-slider-end,
+.xap-player .x-slider-horz .x-slider-inner {
+    background-image: url('../img/player.png');
+}
+
+/*
+ * Track Slider
+ */
 .xap-trackslider {
     margin-top: 5px;
     padding: 0 3px
@@ -45,6 +86,13 @@
 {
     background-position: -16px -132px;
 }
+.xap-trackslider .x-slider-horz .x-slider-thumb-drag {
+    background-position: -32px -132px;
+}
+
+/*
+ * Volume Slider
+ */
 .xap-volumeslider .x-slider-horz {
     background-position: 0 -204px;
 }
@@ -65,6 +113,9 @@
 .xap-volumeslider .x-slider-horz .x-slider-thumb-over {
     background-position: -12px -148px;
 }
+.xap-volumeslider .x-slider-horz .x-slider-thumb-drag {
+    background-position: -24px -148px;
+}
 .xap-volumeslider .x-slider-horz {
     padding-left: 5px;
 }
@@ -72,6 +123,9 @@
     padding-right: 5px;
 }
 
+/*
+ * Prev/Next Buttons
+ */
 .xap-player .xap-prev,
 .xap-player .xap-next {
     width: 20px !important;
@@ -80,23 +134,71 @@
 .xap-player .xap-prev {
     background-position: 0 -60px
 }
+.xap-player .x-btn-over .xap-prev {
+    background-position: -20px -60px
+}
+.xap-player .x-btn-pressed .xap-prev {
+    background-position: -40px -60px
+}
 .xap-player .xap-next {
     background-position: 0 -80px
 }
+.xap-player .x-btn-over .xap-next {
+    background-position: -20px -80px
+}
+.xap-player .x-btn-pressed .xap-next {
+    background-position: -40px -80px
+}
+
+/*
+ * Play/Pause Button
+ */
 .xap-player .xap-play,
 .xap-player .xap-pause {
     width: 30px !important;
     height: 30px;
 }
+.xap-player .x-btn-over .xap-play {
+    background-position: -30px 0;
+}
+.xap-player .x-btn-pressed .xap-play {
+    background-position: -60px 0;
+}
 .xap-player .xap-pause {
     background-position: 0 -30px;
 }
+.xap-player .x-btn-over .xap-pause {
+    background-position: -30px -30px;
+}
+.xap-player .x-btn-pressed .xap-pause {
+    background-position: -60px -30px;
+}
+
+/*
+ * Mute/Unmute Button
+ */
 .xap-player .xap-muted {
     background-position: 0 -116px;
+}
+.xap-player .x-btn-over .xap-muted {
+    background-position: -16px -116px;
+}
+.xap-player .x-btn-pressed .xap-muted {
+    background-position: -32px -116px;
 }
 .xap-player .xap-unmuted {
     background-position: 0 -100px;
 }
+.xap-player .x-btn-over .xap-unmuted {
+    background-position: -16px -100px;
+}
+.xap-player .x-btn-pressed .xap-unmuted {
+    background-position: -32px -100px;
+}
+
+/*
+ * Playlist Toggle Button
+ */
 .xap-player .xap-arrow-down,
 .xap-player .xap-arrow-up {
     width: 9px !important;
@@ -105,41 +207,28 @@
 .xap-player .xap-arrow-down {
     background-position: 0 -160px;
 }
+.xap-player .x-btn-over .xap-arrow-down {
+    background-position: -9px -160px;
+}
+.xap-player .x-btn-pressed .xap-arrow-down {
+    background-position: -18px -160px;
+}
 .xap-player .xap-arrow-up {
     background-position: -27px -160px;
 }
-.xap-player button,
-.xap-player .x-slider-horz,
-.xap-player .x-slider-horz .x-slider-thumb,
-.xap-player .x-slider-horz .x-slider-end,
-.xap-player .x-slider-horz .x-slider-inner {
-    background-image: url('../img/player.png');
+.xap-player .x-btn-over .xap-arrow-up {
+    background-position: -36px -160px;
+}
+.xap-player .x-btn-pressed .xap-arrow-up {
+    background-position: -45px -160px;
 }
 
-
-.xap-trackinfo .x-panel-body {
-    background-color: #FEFFE5;
-    color: #5B5D35;
-    border: 4px solid #161616;
-    font-weight: bold;
-    font-size: 11px;
+/*
+ * Playlist
+ */
+.xap-playlist {
+    border: 1px solid #808080;
 }
-
-.xap-time-elapsed,
-.xap-id3,
-.xap-time-total {
-    float: left;
-    text-align: center;
-}
-
-.xap-time-elapsed,
-.xap-time-total {
-    width: 40px;
-    margin-top: 16px;
-}
-.xap-id3 {
-    margin-top: 8px;
-    width: 210px;
-    white-space: nowrap;
-    overflow: hidden;
+.xap-playlist .x-panel-body {
+    border: none;
 }
