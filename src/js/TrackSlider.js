@@ -18,6 +18,7 @@ Ext.define('Xap.TrackSlider', {
     increment: 1,
     minValue: 0,
     maxValue: 0,
+    cls: 'xap-trackslider',
 
     tipText: function(thumb) {
         return Xap.Format.formatTime(thumb.value);

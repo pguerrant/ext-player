@@ -19,6 +19,7 @@ Ext.define('Xap.TrackInfo', {
     height: 55,
 
     tpl: Xap.Templates.trackInfo,
+    cls: 'xap-trackinfo',
 
     // private
     initComponent: function() {

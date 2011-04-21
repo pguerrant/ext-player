@@ -12,11 +12,13 @@ Ext.define('Xap.VolumeSlider', {
     alias: 'widget.xap.volumeslider',
 
     animate: false,
-    width: 65,
+    width: 64,
     value: 0,
     increment: 1,
     minValue: 0,
     maxValue: 100,
+    cls: 'xap-volumeslider',
+
     tipText: function(thumb) {
         return thumb.value + '%';
     }
