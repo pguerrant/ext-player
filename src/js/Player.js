@@ -73,12 +73,8 @@ Ext.define('Xap.Player', {
         var me = this,
             trackInfo = new Xap.TrackInfo(),
             trackSlider = new Xap.TrackSlider({
+                disabled: true,
                 listeners: {
-                    // disabling the track slider on render since the "disabled" configuration
-                    // doesn't work on sliders as of Ext JS 4 Beta 2  4/10/2011
-                    // http://www.sencha.com/forum/showthread.php?130022-Ext.slider.Single-throws-an-error-when-initialized-with-quot-disabled-quot-configuration&p=590568#post590568
-                    // TODO: move this to initial config when this is fixed.
-                    render: {fn: me.disableSlider, scope: me},
                     dragstart: {fn: me.onTrackSliderDragStart, scope: me},
                     changecomplete: {fn: me.onTrackSliderChangeComplete, scope: me}
                 }
@@ -106,43 +102,39 @@ Ext.define('Xap.Player', {
             Button = Ext.button.Button,
             playlistButton = me.playlistButton = new Button({
                 tooltip: 'Playlist',
-                iconCls: 'xap-arrow-up',
+                cls: 'xap-arrow-up',
                 handler: me.togglePlaylist,
                 scope: me
             }),
             playButton = me.playButton = new Button({
                 tooltip: 'Play|Pause',
-                iconCls: 'xap-play',
+                cls: 'xap-play',
                 handler: me.togglePause,
                 scope: me
             }),
             muteButton = me.muteButton = new Button({
                 tooltip: 'Mute|Unmute',
-                iconCls: 'xap-unmuted',
+                cls: 'xap-unmuted',
                 handler: me.toggleMute,
                 scope: me
             }),
             prevButton = me.prevButton = new Button({
                 tooltip: 'Previous',
-                iconCls: 'xap-prev',
+                cls: 'xap-prev',
                 handler: me.movePrev,
                 scope: me
             }),
             nextButton = me.nextButton = new Button({
                 tooltip: 'Next',
-                iconCls: 'xap-next',
+                cls: 'xap-next',
                 handler: me.moveNext,
                 scope: me
             }),
             volumeChangeHandler = me.onVolumeSliderChange,
             volumeSlider = me.volumeSlider = new Xap.VolumeSlider({
                 value: me.volume,
+                disabled: true,
                 listeners: {
-                    // disabling the volume slider on render since the "disabled" configuration
-                    // doesn't work on sliders as of Ext JS 4 Beta 2  4/10/2011
-                    // http://www.sencha.com/forum/showthread.php?130022-Ext.slider.Single-throws-an-error-when-initialized-with-quot-disabled-quot-configuration&p=590568#post590568
-                    // TODO: move this to initial config when this is fixed.
-                    render: {fn: me.disableSlider, scope: me},
                     drag: {fn: volumeChangeHandler, scope: me},
                     changecomplete: {fn: volumeChangeHandler, scope: me}
                 }
@@ -298,7 +290,8 @@ Ext.define('Xap.Player', {
         var smSound = this.getCurrentSmSound();
         if(smSound) {
             smSound.pause();
-            this.playButton.setIconClass('xap-play');
+            this.playButton.removeCls('xap-pause');
+            this.playButton.addCls('xap-play');
         }
     },
 
@@ -309,7 +302,8 @@ Ext.define('Xap.Player', {
         var smSound = this.getCurrentSmSound();
         if(smSound) {
             smSound.play();
-            this.playButton.setIconClass('xap-pause');
+            this.playButton.removeCls('xap-play');
+            this.playButton.addCls('xap-pause');
         }
     },
 
@@ -328,7 +322,8 @@ Ext.define('Xap.Player', {
      */
     mute: function() {
         this.getCurrentSmSound().mute();
-        this.muteButton.setIconClass('xap-muted');
+        this.muteButton.removeCls('xap-unmuted');
+        this.muteButton.addCls('xap-muted');
     },
 
     /**
@@ -336,7 +331,8 @@ Ext.define('Xap.Player', {
      */
     unmute: function() {
         this.getCurrentSmSound().unmute();
-        this.muteButton.setIconClass('xap-unmuted');
+        this.muteButton.removeCls('xap-muted');
+        this.muteButton.addCls('xap-unmuted');
     },
 
     /**
@@ -561,7 +557,8 @@ Ext.define('Xap.Player', {
             me.play();
         } else {
             me.moveTo(0);
-            me.playButton.setIconClass('xap-play');
+            me.playButton.removeCls('xap-pause');
+            me.playButton.addCls('xap-play');
         }
     },
 
@@ -603,10 +600,12 @@ Ext.define('Xap.Player', {
 
         if(playlist.isHidden()) {
             playlist.show();
-            playlistButton.setIconClass('xap-arrow-up');
+            playlistButton.removeCls('xap-arrow-down');
+            playlistButton.addCls('xap-arrow-up');
         } else {
             playlist.hide();
-            playlistButton.setIconClass('xap-arrow-down');
+            playlistButton.removeCls('xap-arrow-up');
+            playlistButton.addCls('xap-arrow-down');
         }
     }
 

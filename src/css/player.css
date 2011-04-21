@@ -7,11 +7,11 @@
 }
 .xap-player .x-panel-body {
     border: none;
-    background-color: #626566;
+    background: #626566;
 }
 .xap-player .x-toolbar {
     height: 36px;
-    background-color: #626566;
+    background: #626566;
     border: 0;
 }
 .xap-player .x-btn-toolbar {
@@ -48,9 +48,18 @@
 }
 
 /*
+ * Buttons
+ */
+.xap-player .x-btn {
+    padding: 0;
+    border: 0;
+    background: transparent;
+}
+
+/*
  * All of the buttons, slider backgrounds and slider thumbs use the same sprite
  */
-.xap-player button,
+.xap-player .x-btn-inner,
 .xap-player .x-slider-horz,
 .xap-player .x-slider-horz .x-slider-thumb,
 .xap-player .x-slider-horz .x-slider-end,
@@ -126,100 +135,108 @@
 /*
  * Prev/Next Buttons
  */
-.xap-player .xap-prev,
-.xap-player .xap-next {
-    width: 20px !important;
+.xap-prev .x-btn-inner,
+.xap-next .x-btn-inner {
+    width: 20px;
     height: 20px;
 }
-.xap-player .xap-prev {
+.xap-prev .x-btn-inner {
     background-position: 0 -60px
 }
-.xap-player .x-btn-over .xap-prev {
+.xap-prev.x-btn-over .x-btn-inner {
     background-position: -20px -60px
 }
-.xap-player .x-btn-pressed .xap-prev {
+.xap-prev.x-btn-pressed .x-btn-inner {
     background-position: -40px -60px
 }
-.xap-player .xap-next {
+.xap-next .x-btn-inner {
     background-position: 0 -80px
 }
-.xap-player .x-btn-over .xap-next {
+.xap-next.x-btn-over .x-btn-inner {
     background-position: -20px -80px
 }
-.xap-player .x-btn-pressed .xap-next {
+.xap-next.x-btn-pressed .x-btn-inner {
     background-position: -40px -80px
 }
 
 /*
  * Play/Pause Button
  */
-.xap-player .xap-play,
-.xap-player .xap-pause {
-    width: 30px !important;
+.xap-play .x-btn-inner,
+.xap-pause .x-btn-inner {
+    width: 30px;
     height: 30px;
 }
-.xap-player .x-btn-over .xap-play {
+.xap-play .x-btn-inner {
+    background-position: 0 0;
+}
+.xap-play.x-btn-over .x-btn-inner {
     background-position: -30px 0;
 }
-.xap-player .x-btn-pressed .xap-play {
+.xap-play.x-btn-pressed .x-btn-inner {
     background-position: -60px 0;
 }
-.xap-player .xap-pause {
+.xap-pause .x-btn-inner {
     background-position: 0 -30px;
 }
-.xap-player .x-btn-over .xap-pause {
+.xap-pause.x-btn-over .x-btn-inner {
     background-position: -30px -30px;
 }
-.xap-player .x-btn-pressed .xap-pause {
+.xap-pause.x-btn-pressed .x-btn-inner {
     background-position: -60px -30px;
 }
 
 /*
  * Mute/Unmute Button
  */
-.xap-player .xap-muted {
+.xap-muted .x-btn-inner,
+.xap-unmuted .x-btn-inner {
+    height: 16px;
+    width: 16px;
+}
+.xap-muted .x-btn-inner {
     background-position: 0 -116px;
 }
-.xap-player .x-btn-over .xap-muted {
+.xap-muted.x-btn-over .x-btn-inner {
     background-position: -16px -116px;
 }
-.xap-player .x-btn-pressed .xap-muted {
+.xap-muted.x-btn-pressed .x-btn-inner {
     background-position: -32px -116px;
 }
-.xap-player .xap-unmuted {
+.xap-unmuted .x-btn-inner {
     background-position: 0 -100px;
 }
-.xap-player .x-btn-over .xap-unmuted {
+.xap-unmuted.x-btn-over .x-btn-inner {
     background-position: -16px -100px;
 }
-.xap-player .x-btn-pressed .xap-unmuted {
+.xap-unmuted.x-btn-pressed .x-btn-inner {
     background-position: -32px -100px;
 }
 
 /*
  * Playlist Toggle Button
  */
-.xap-player .xap-arrow-down,
-.xap-player .xap-arrow-up {
-    width: 9px !important;
+.xap-arrow-down .x-btn-inner,
+.xap-arrow-up .x-btn-inner {
+    width: 9px;
     height: 9px;
 }
-.xap-player .xap-arrow-down {
+.xap-arrow-down .x-btn-inner {
     background-position: 0 -160px;
 }
-.xap-player .x-btn-over .xap-arrow-down {
+.xap-arrow-down.x-btn-over .x-btn-inner {
     background-position: -9px -160px;
 }
-.xap-player .x-btn-pressed .xap-arrow-down {
+.xap-arrow-down.x-btn-pressed .x-btn-inner {
     background-position: -18px -160px;
 }
-.xap-player .xap-arrow-up {
+.xap-arrow-up .x-btn-inner {
     background-position: -27px -160px;
 }
-.xap-player .x-btn-over .xap-arrow-up {
+.xap-arrow-up.x-btn-over .x-btn-inner {
     background-position: -36px -160px;
 }
-.xap-player .x-btn-pressed .xap-arrow-up {
+.xap-arrow-up.x-btn-pressed .x-btn-inner {
     background-position: -45px -160px;
 }
 
