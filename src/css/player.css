@@ -299,3 +299,13 @@
 .xap-playlist .x-grid-row-over .x-grid-rowwrap-div {
     background-color: #f8f9d7;
 }
+
+/*
+ * Tooltips.  Since the tooltip element is a child of the document body, there's no way to
+ * make these styles specific to Ext Audio Player.  If there are other components on the
+ * same page that use tooltips conflicts may occur.
+ */
+.x-tip {
+    background-color: #ececec;
+    border-color: #bec2c4;
+}
