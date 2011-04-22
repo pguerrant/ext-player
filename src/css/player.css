@@ -10,7 +10,7 @@
     background: #626566;
 }
 .xap-player .x-toolbar {
-    height: 36px;
+    height: 40px;
     background: #626566;
     border: 0;
 }
@@ -102,6 +102,9 @@
 /*
  * Volume Slider
  */
+.xap-volumeslider {
+    top: 10px !important;
+}
 .xap-volumeslider .x-slider-horz {
     background-position: 0 -204px;
 }
@@ -135,6 +138,10 @@
 /*
  * Prev/Next Buttons
  */
+.xap-prev,
+.xap-next {
+    top: 6px !important;
+}
 .xap-prev .x-btn-inner,
 .xap-next .x-btn-inner {
     width: 20px;
@@ -162,6 +169,10 @@
 /*
  * Play/Pause Button
  */
+.xap-play,
+.xap-pause {
+    top: 1px !important;
+}
 .xap-play .x-btn-inner,
 .xap-pause .x-btn-inner {
     width: 30px;
@@ -189,6 +200,10 @@
 /*
  * Mute/Unmute Button
  */
+.xap-muted,
+.xap-unmuted {
+    top: 8px !important;
+}
 .xap-muted .x-btn-inner,
 .xap-unmuted .x-btn-inner {
     height: 16px;
@@ -216,6 +231,10 @@
 /*
  * Playlist Toggle Button
  */
+.xap-arrow-down,
+.xap-arrow-up {
+    top: 20px !important;
+}
 .xap-arrow-down .x-btn-inner,
 .xap-arrow-up .x-btn-inner {
     width: 9px;

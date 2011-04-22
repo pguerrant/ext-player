@@ -138,15 +138,24 @@ Ext.define('Xap.Player', {
                     drag: {fn: volumeChangeHandler, scope: me},
                     changecomplete: {fn: volumeChangeHandler, scope: me}
                 }
-            });
+            }),
+            spacer = function(width) {
+                return {xtype: 'tbspacer', width: width};
+            };
 
         return [
+            spacer(4),
             playlistButton,
+            spacer(93),
             prevButton,
+            spacer(3),
             playButton,
+            spacer(3),
             nextButton,
+            '->',
             muteButton,
-            volumeSlider
+            volumeSlider,
+            spacer(5)
         ];
     },
 
