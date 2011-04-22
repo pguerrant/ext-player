@@ -3,8 +3,10 @@
 <head>
     <title>Ext Player Demo</title>
 
-    <link rel="stylesheet" type="text/css" href="resources/css/ext-all.css"/>
+    <link rel="stylesheet" type="text/css" href="css/ext-all.css"/>
     <link rel="stylesheet" type="text/css" href="css/player.css"/>
+    <script type="text/javascript" src="js/ext-all.js"></script>
+    <script type="text/javascript" src="js/soundmanager2-jsmin.js"></script>
     <script type="text/javascript" src="js/player.js"></script>
     <script type="text/javascript">
 
@@ -23,6 +25,12 @@ soundManager.onready(function() {
             'audio_files/Prelude From Suite No. 1 In G Major For Cello Bwv 1007.mp3', // a song with a really long title
             'audio_files/41.mp3', // a song with a really short title
         ],
+         playlistConfig: {
+            showTime: true,
+            showAlbum: true,
+            width: 500
+            //floating: true
+        },
         showPlaylist: true,
         autoPlay: true,
         renderTo: Ext.getBody()
