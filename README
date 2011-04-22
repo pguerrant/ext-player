@@ -29,21 +29,21 @@ Config options: (can be specified as url params, or a URL to a json object)
 todo list:
 
 - implement floating vs inline playlist.
-- deleting tracks from playlist
 - test player both as a child component in a larger Ext layout, and rendered directly to the dom.
 - fix button bug - in Firefox play/pause/next/prev buttons remain focused after clicking them.
     If you press space or enter on a focused button it has the same effect as clicking the button.
 - if root or files param not provided, then run player in "local" mode - prompt user to load files from filesystem
+- delete files from playlist
 - add some events to the player in case someone wants to use it in a larger application.
 - Track info panel displays default artist and title of "unknown" before id3 info is available. Is this the right behavior?
 - create a custom build that only includes the neccessary Ext JS javascipt and css resources
 - gracefully handle mp3 urls that return 404
 - "widgetize" the player component
-- theme it!
 
 
-Ideas for enhancements:
+Ideas for future enhancements:
 - modify the track slider to show percent loaded in addition to position
 - sort/shuffle playlist
 - drag and drop reorder playlist??
 - add ability to configure playlist position.
+- make player width configurable
