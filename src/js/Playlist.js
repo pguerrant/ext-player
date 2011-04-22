@@ -42,6 +42,7 @@ Ext.define('Xap.Playlist', {
 
     border: 0,
     cls: 'xap-playlist',
+    sortableHeaders: false,
 
     constructor: function() {
         this.addEvents(
@@ -59,17 +60,17 @@ Ext.define('Xap.Playlist', {
     initComponent: function() {
         var me = this,
             columns = [
-                {header: 'Track', dataIndex: 'title', flex: 1}
+                {header: 'Track', dataIndex: 'title', flex: 1, menuDisabled: true}
             ];
 
         if(me.showArtist) {
-            columns.push({header: 'Artist', dataIndex: 'artist', flex: 1});
+            columns.push({header: 'Artist', dataIndex: 'artist', flex: 1, menuDisabled: true});
         }
         if(me.showTime) {
-            columns.push({header: 'Time', dataIndex: 'duration', renderer: me.renderTime, width: 35});
+            columns.push({header: 'Time', dataIndex: 'duration', renderer: me.renderTime, width: 35, menuDisabled: true});
         }
         if(me.showAlbum) {
-            columns.push({header: 'Album', dataIndex: 'album', flex: 1});
+            columns.push({header: 'Album', dataIndex: 'album', flex: 1, menuDisabled: true});
         }
 
         Ext.apply(me, {
