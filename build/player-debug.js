@@ -599,15 +599,19 @@ Ext.define('Xap.Player', {
         this.getCurrentSmSound().mute();
         this.muteButton.removeCls('xap-unmuted');
         this.muteButton.addCls('xap-muted');
+        this.volumeSlider.setValue(0);
     },
 
     /**
      * Unmutes the current track
      */
     unmute: function() {
-        this.getCurrentSmSound().unmute();
-        this.muteButton.removeCls('xap-muted');
-        this.muteButton.addCls('xap-unmuted');
+        var me = this,
+            smSound = me.getCurrentSmSound();
+        me.getCurrentSmSound().unmute();
+        me.muteButton.removeCls('xap-muted');
+        me.muteButton.addCls('xap-unmuted');
+        me.volumeSlider.setValue(smSound.volume);
     },
 
     /**

@@ -28,6 +28,7 @@ Config options: (can be specified as url params, or a URL to a json object)
 
 todo list:
 
+- move volume slider to zero when paused.
 - implement floating vs inline playlist.
 - test player both as a child component in a larger Ext layout, and rendered directly to the dom.
 - fix button bug - in Firefox play/pause/next/prev buttons remain focused after clicking them.
