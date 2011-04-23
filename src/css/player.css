@@ -2,16 +2,16 @@
  * Ext Audio Player
  */
 .xap-player {
-    border: 1px solid #808080;
+    background: url('../img/player.png');
     font-family: helvetica, arial, verdana, sans-serif;
 }
 .xap-player .x-panel-body {
-    border: none;
-    background: #626566;
+    border: 0;
+    background: transparent;
 }
 .xap-player .x-toolbar {
     height: 40px;
-    background: #626566;
+    background: transparent;
     border: 0;
 }
 .xap-player .x-btn-toolbar {
@@ -23,11 +23,11 @@
  * Track Info Panel
  */
 .xap-trackinfo .x-panel-body {
-    background-color: #feffe5;
-    color: #5b5d35;
-    border: 4px solid #161616;
+    height: 56px;
     font-weight: bold;
     font-size: 11px;
+    padding: 0 4px;
+    color: #5b5d35;
 }
 .xap-time-elapsed,
 .xap-id3,
@@ -38,10 +38,10 @@
 .xap-time-elapsed,
 .xap-time-total {
     width: 40px;
-    margin-top: 16px;
+    margin-top: 22px;
 }
 .xap-id3 {
-    margin-top: 8px;
+    margin-top: 14px;
     width: 210px;
     white-space: nowrap;
     overflow: hidden;
@@ -57,76 +57,52 @@
 }
 
 /*
- * All of the buttons, slider backgrounds and slider thumbs use the same sprite
+ * All of the buttons and slider thumbs use the same sprite
  */
 .xap-player .x-btn-inner,
+.xap-player .x-slider-horz .x-slider-thumb {
+    background: url('../img/player.png');
+}
+
+/*
+ * Sliders: http://www.youtube.com/watch?v=LVR320FouqE
+ */
 .xap-player .x-slider-horz,
-.xap-player .x-slider-horz .x-slider-thumb,
 .xap-player .x-slider-horz .x-slider-end,
 .xap-player .x-slider-horz .x-slider-inner {
-    background-image: url('../img/player.png');
+    background: none;
 }
 
 /*
  * Track Slider
  */
 .xap-trackslider {
-    margin-top: 5px;
-    padding: 0 3px
-}
-.xap-trackslider .x-slider-horz {
-    background-position: 0 -182px;
-}
-.xap-trackslider .x-slider-horz .x-slider-end {
-    background-position: -1px -182px;
-    background-repeat: repeat;
+    margin: 5px 5px 0;
 }
 .xap-trackslider .x-slider-horz .x-slider-inner {
-    height: 16px;
-    background-position: 0 -170px;
+    height: 22px;
 }
 .xap-trackslider .x-slider-horz .x-slider-thumb {
-    height: 16px;
-    width: 16px;
-    top: 0;
-    background-position: 0 -132px;
-}
-.xap-trackslider .x-slider-horz .x-slider-thumb-over
-{
-    background-position: -16px -132px;
-}
-.xap-trackslider .x-slider-horz .x-slider-thumb-drag {
-    background-position: -32px -132px;
+    height: 22px;
+    width: 22px;
+    top: -2px;
+    background-position: -360px -60px;
 }
 
 /*
  * Volume Slider
  */
 .xap-volumeslider {
-    top: 10px !important;
-}
-.xap-volumeslider .x-slider-horz {
-    background-position: 0 -204px;
-}
-.xap-volumeslider .x-slider-horz .x-slider-end {
-    background-position: -45px -204px;
-    background-repeat: repeat;
+    top: 6px !important;
 }
 .xap-volumeslider .x-slider-horz .x-slider-inner {
-    height: 12px;
-    background-position: 0 -195px;
+    height: 18px;
 }
 .xap-volumeslider .x-slider-horz .x-slider-thumb {
-    height: 12px;
-    width: 12px;
+    height: 18px;
+    width: 18px;
     top: 0;
-    background-position: 0 -148px;
-}
-.xap-volumeslider .x-slider-horz .x-slider-thumb-over {
-    background-position: -12px -148px;
-}
-.xap-volumeslider .x-slider-horz .x-slider-thumb-drag {
-    background-position: -24px -148px;
+    background-position: -360px -82px;
 }
 .xap-volumeslider .x-slider-horz {
     padding-left: 5px;
@@ -140,7 +116,7 @@
  */
 .xap-prev,
 .xap-next {
-    top: 6px !important;
+    top: 5px !important;
 }
 .xap-prev .x-btn-inner,
 .xap-next .x-btn-inner {
@@ -148,22 +124,22 @@
     height: 20px;
 }
 .xap-prev .x-btn-inner {
-    background-position: 0 -60px
+    background-position: -300px -60px
 }
 .xap-prev.x-btn-over .x-btn-inner {
-    background-position: -20px -60px
+    background-position: -320px -60px
 }
 .xap-prev.x-btn-pressed .x-btn-inner {
-    background-position: -40px -60px
+    background-position: -340px -60px
 }
 .xap-next .x-btn-inner {
-    background-position: 0 -80px
+    background-position: -300px -80px
 }
 .xap-next.x-btn-over .x-btn-inner {
-    background-position: -20px -80px
+    background-position: -320px -80px
 }
 .xap-next.x-btn-pressed .x-btn-inner {
-    background-position: -40px -80px
+    background-position: -340px -80px
 }
 
 /*
@@ -171,7 +147,7 @@
  */
 .xap-play,
 .xap-pause {
-    top: 1px !important;
+    top: 0px !important;
 }
 .xap-play .x-btn-inner,
 .xap-pause .x-btn-inner {
@@ -179,22 +155,22 @@
     height: 30px;
 }
 .xap-play .x-btn-inner {
-    background-position: 0 0;
+    background-position: -300px 0;
 }
 .xap-play.x-btn-over .x-btn-inner {
-    background-position: -30px 0;
+    background-position: -330px 0;
 }
 .xap-play.x-btn-pressed .x-btn-inner {
-    background-position: -60px 0;
+    background-position: -360px 0;
 }
 .xap-pause .x-btn-inner {
-    background-position: 0 -30px;
+    background-position: -300px -30px;
 }
 .xap-pause.x-btn-over .x-btn-inner {
-    background-position: -30px -30px;
+    background-position: -330px -30px;
 }
 .xap-pause.x-btn-pressed .x-btn-inner {
-    background-position: -60px -30px;
+    background-position: -360px -30px;
 }
 
 /*
@@ -202,30 +178,24 @@
  */
 .xap-muted,
 .xap-unmuted {
-    top: 8px !important;
+    top: 7px !important;
 }
 .xap-muted .x-btn-inner,
 .xap-unmuted .x-btn-inner {
-    height: 16px;
-    width: 16px;
+    height: 14px;
+    width: 8px;
 }
 .xap-muted .x-btn-inner {
-    background-position: 0 -116px;
+    background-position: -300px -100px;
 }
 .xap-muted.x-btn-over .x-btn-inner {
-    background-position: -16px -116px;
-}
-.xap-muted.x-btn-pressed .x-btn-inner {
-    background-position: -32px -116px;
+    background-position: -308px -100px;
 }
 .xap-unmuted .x-btn-inner {
-    background-position: 0 -100px;
+    background-position: -300px -100px;
 }
 .xap-unmuted.x-btn-over .x-btn-inner {
-    background-position: -16px -100px;
-}
-.xap-unmuted.x-btn-pressed .x-btn-inner {
-    background-position: -32px -100px;
+    background-position: -308px -100px;
 }
 
 /*
@@ -233,30 +203,18 @@
  */
 .xap-arrow-down,
 .xap-arrow-up {
-    top: 20px !important;
+    top: 21px !important;
 }
 .xap-arrow-down .x-btn-inner,
 .xap-arrow-up .x-btn-inner {
-    width: 9px;
-    height: 9px;
+    width: 11px;
+    height: 8px;
 }
 .xap-arrow-down .x-btn-inner {
-    background-position: 0 -160px;
-}
-.xap-arrow-down.x-btn-over .x-btn-inner {
-    background-position: -9px -160px;
-}
-.xap-arrow-down.x-btn-pressed .x-btn-inner {
-    background-position: -18px -160px;
+    background-position: -316px -106px;
 }
 .xap-arrow-up .x-btn-inner {
-    background-position: -27px -160px;
-}
-.xap-arrow-up.x-btn-over .x-btn-inner {
-    background-position: -36px -160px;
-}
-.xap-arrow-up.x-btn-pressed .x-btn-inner {
-    background-position: -45px -160px;
+    background-position: -327px -106px;
 }
 
 /*

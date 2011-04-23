@@ -63,7 +63,7 @@ Ext.define('Xap.Player', {
      * True to show playlist at startup
      */
 
-    height: 120,
+    height: 121,
     width: 300,
     cls: 'xap-player',
     layout: 'anchor',
@@ -146,7 +146,7 @@ Ext.define('Xap.Player', {
         return [
             spacer(4),
             playlistButton,
-            spacer(93),
+            spacer(92),
             prevButton,
             spacer(3),
             playButton,
@@ -154,8 +154,9 @@ Ext.define('Xap.Player', {
             nextButton,
             '->',
             muteButton,
+            spacer(2),
             volumeSlider,
-            spacer(5)
+            spacer(6)
         ];
     },
 
@@ -552,8 +553,15 @@ Ext.define('Xap.Player', {
 
     // private
     onTrackSliderChangeComplete: function(slider) {
+        var position = slider.getValue();
         this.isSliderDragging = false;
         this.getCurrentSmSound().setPosition(slider.getValue());
+        if(position === 0) {
+            // normally when we call setPosition on a sound, the "onWhilePlaying" event fires
+            // which updates the position track info panel, but if the position is zero, the
+            // event does not fire, so let's update the track position manually
+            this.updateTrackPosition(0);
+        }
     },
 
     // private
