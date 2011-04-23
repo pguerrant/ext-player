@@ -73,8 +73,13 @@ Ext.define('Xap.Player', {
         var me = this,
             trackInfo = new Xap.TrackInfo(),
             trackSlider = new Xap.TrackSlider({
-                disabled: true,
+                //disabled: true,
                 listeners: {
+                    /*
+                     * need to disable slider on render instead of in initial config until this bug is fixed in IE:
+                     * http://www.sencha.com/forum/showthread.php?130022-Ext.slider.Single-throws-an-error-when-initialized-with-quot-disabled-quot-configuration&p=590568#post590568
+                     */
+                    render: {fn: me.disableSlider, scope: me},
                     dragstart: {fn: me.onTrackSliderDragStart, scope: me},
                     changecomplete: {fn: me.onTrackSliderChangeComplete, scope: me}
                 }
@@ -133,8 +138,13 @@ Ext.define('Xap.Player', {
             volumeChangeHandler = me.onVolumeSliderChange,
             volumeSlider = me.volumeSlider = new Xap.VolumeSlider({
                 value: me.volume,
-                disabled: true,
+                //disabled: true,
                 listeners: {
+                    /*
+                     * need to disable slider on render instead of in initial config until this bug is fixed in IE:
+                     * http://www.sencha.com/forum/showthread.php?130022-Ext.slider.Single-throws-an-error-when-initialized-with-quot-disabled-quot-configuration&p=590568#post590568
+                     */
+                    render: {fn: me.disableSlider, scope: me},
                     drag: {fn: volumeChangeHandler, scope: me},
                     changecomplete: {fn: volumeChangeHandler, scope: me}
                 }

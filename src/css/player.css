@@ -11,7 +11,7 @@
 }
 .xap-player .x-toolbar {
     height: 40px;
-    background: transparent;
+    background: transparent !important;
     border: 0;
 }
 .xap-player .x-btn-toolbar {
@@ -50,7 +50,8 @@
 /*
  * Buttons
  */
-.xap-player .x-btn {
+.xap-player .x-btn,
+.xap-player .x-btn-inner {
     padding: 0;
     border: 0;
     background: transparent;
@@ -119,27 +120,33 @@
     top: 5px !important;
 }
 .xap-prev .x-btn-inner,
-.xap-next .x-btn-inner {
+.xap-prev button,
+.xap-next .x-btn-inner,
+.xap-next button {
     width: 20px;
     height: 20px;
 }
+.xap-prev.x-btn-disabled .x-btn-inner,
+.xap-next.x-btn-disabled .x-btn-inner {
+    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80,style=2);
+}
 .xap-prev .x-btn-inner {
-    background-position: -300px -60px
+    background-position: -300px -60px;
 }
 .xap-prev.x-btn-over .x-btn-inner {
-    background-position: -320px -60px
+    background-position: -320px -60px;
 }
 .xap-prev.x-btn-pressed .x-btn-inner {
-    background-position: -340px -60px
+    background-position: -340px -60px;
 }
 .xap-next .x-btn-inner {
-    background-position: -300px -80px
+    background-position: -300px -80px;
 }
 .xap-next.x-btn-over .x-btn-inner {
-    background-position: -320px -80px
+    background-position: -320px -80px;
 }
 .xap-next.x-btn-pressed .x-btn-inner {
-    background-position: -340px -80px
+    background-position: -340px -80px;
 }
 
 /*
@@ -150,7 +157,9 @@
     top: 0px !important;
 }
 .xap-play .x-btn-inner,
-.xap-pause .x-btn-inner {
+.xap-play button,
+.xap-pause .x-btn-inner,
+.xap-pause button {
     width: 30px;
     height: 30px;
 }
@@ -181,7 +190,9 @@
     top: 7px !important;
 }
 .xap-muted .x-btn-inner,
-.xap-unmuted .x-btn-inner {
+.xap-muted button,
+.xap-unmuted .x-btn-inner,
+.xap-unmuted button {
     height: 14px;
     width: 8px;
 }
@@ -203,10 +214,17 @@
  */
 .xap-arrow-down,
 .xap-arrow-up {
-    top: 21px !important;
+    top: 28px !important;
+}
+.xap-arrow-down em,
+.xap-arrow-up em {
+    display: block;
+    line-height: 0;
 }
 .xap-arrow-down .x-btn-inner,
-.xap-arrow-up .x-btn-inner {
+.xap-arrow-down button,
+.xap-arrow-up .x-btn-inner,
+.xap-arrow-up button {
     width: 11px;
     height: 8px;
 }
