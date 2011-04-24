@@ -29,7 +29,6 @@ Config options: (can be specified as url params, or a URL to a json object)
 todo list:
 
 - can't drag window if you click on TrackInfo panel in IE while playing.  Re-rendering the template removes the element, wiping out the event handlers
-- play track on double click
 - add length (TLEN) to id3 info (fall back to estimate if no TLEN)
 - allow player to be initialized on Ext.onReady instead of soundManager.onready
 - detect if flash is not installed and show download link
@@ -44,6 +43,7 @@ todo list:
 - create a custom build that only includes the neccessary Ext JS javascipt and css resources
 - gracefully handle mp3 urls that return 404
 - "widgetize" the player component
+- IE6 compatibility - png transparency
 
 
 Ideas for future enhancements:

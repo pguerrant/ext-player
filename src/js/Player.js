@@ -178,8 +178,12 @@ Ext.define('Xap.Player', {
                 Ext.apply(me.playlistConfig || {}, {
                     store: me.store,
                     listeners: {
-                        trackSelect: {
-                            fn: me.moveTo,
+                        trackselect: {
+                            fn: me.onPlaylistTrackSelect,
+                            scope: me
+                        },
+                        itemmousedown: {
+                            fn: me.onPlaylistItemMousedown,
                             scope: me
                         }
                     },
@@ -293,12 +297,12 @@ Ext.define('Xap.Player', {
      * Pauses/resumes play of current track
      */
     togglePause: function() {
-        var smSound = this.getCurrentSmSound();
-        if(smSound) {
-            if(smSound.playState === 0 || smSound.paused) {
-                this.play();
+        var me = this;
+        if(me.getCurrentSmSound()) {
+            if(me.isPlaying()) {
+                me.pause();
             } else {
-                this.pause();
+                me.play();
             }
         }
     },
@@ -307,11 +311,12 @@ Ext.define('Xap.Player', {
      * Pauses the currently playing track
      */
     pause: function() {
-        var smSound = this.getCurrentSmSound();
-        if(smSound) {
+        var me = this,
+            smSound = me.getCurrentSmSound();
+        if(me.isPlaying()) {
             smSound.pause();
-            this.playButton.removeCls('xap-pause');
-            this.playButton.addCls('xap-play');
+            me.playButton.removeCls('xap-pause');
+            me.playButton.addCls('xap-play');
         }
     },
 
@@ -319,11 +324,12 @@ Ext.define('Xap.Player', {
      * Plays the current track
      */
     play: function() {
-        var smSound = this.getCurrentSmSound();
-        if(smSound) {
+        var me = this,
+            smSound = me.getCurrentSmSound();
+        if(!me.isPlaying()) {
             smSound.play();
-            this.playButton.removeCls('xap-play');
-            this.playButton.addCls('xap-pause');
+            me.playButton.removeCls('xap-play');
+            me.playButton.addCls('xap-pause');
         }
     },
 
@@ -419,7 +425,7 @@ Ext.define('Xap.Player', {
     moveTo: function(index) {
         var me = this,
             smSound = me.getCurrentSmSound(),
-            isPlaying = smSound && (smSound.playState === 1 && !smSound.paused),
+            isPlaying = me.isPlaying(),
             isMuted = smSound && (smSound.muted),
             prevButton = me.prevButton,
             nextButton = me.nextButton;
@@ -638,6 +644,29 @@ Ext.define('Xap.Player', {
             playlistButton.removeCls('xap-arrow-up');
             playlistButton.addCls('xap-arrow-down');
         }
+    },
+
+    // private
+    isPlaying: function() {
+        var smSound = this.getCurrentSmSound();
+        return smSound && smSound.playState === 1 && !smSound.paused;
+    },
+
+    // private
+    onTrackSelect: function(index) {
+        this.moveTo(index);
+        this.play();
+    },
+
+    // private
+    onPlaylistTrackSelect: function(index) {
+        this.moveTo(index);
+    },
+
+    // private
+    onPlaylistItemMousedown: function() {
+        this.getCurrentSmSound().setPosition(0);
+        this.play();
     }
 
 });

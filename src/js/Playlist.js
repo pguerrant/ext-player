@@ -47,11 +47,11 @@ Ext.define('Xap.Playlist', {
     constructor: function() {
         this.addEvents(
             /**
-             * @event trackSelect
+             * @event trackselect
              * Fired when a track is selected
              * @param {Number} index
              */
-            'trackSelect'
+            'trackselect'
         );
         this.callParent(arguments);
     },
@@ -104,7 +104,7 @@ Ext.define('Xap.Playlist', {
      * Handles a select event on the selection model
      */
     onSelect: function(sm, record, index) {
-        this.fireEvent('trackSelect', index);
+        this.fireEvent('trackselect', index);
     },
 
     /**
