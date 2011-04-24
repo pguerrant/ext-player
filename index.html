@@ -1,15 +1,21 @@
 <!DOCTYPE html>
-<html>
+<!-- setting the x-viewport class here is necessary to prevent the sm2 flash movie
+    from being reloaded when the Ext viewport is initialized (which destroys all the
+    flash movie's methods) see http://getsatisfaction.com/schillmania/topics/_s_o_createsound_undefined
+    note: this only occurs in firefox and when you are using a Ext.container.Viewport in your app,
+    or doing anything else that causes overflow hidden to be set on the body.
+    -->
+<html class="x-viewport">
 <head>
     <title>Ext Player Demo</title>
     <link rel="stylesheet" type="text/css" href="css/ext-all.css"/>
     <link rel="stylesheet" type="text/css" href="css/player.css"/>
+    <link rel="stylesheet" type="text/css" href="css/demo.css"/>
     <script type="text/javascript" src="js/ext-all.js"></script>
     <script type="text/javascript" src="js/soundmanager2-jsmin.js"></script>
     <script type="text/javascript" src="js/player.js"></script>
-    <script type="text/javascript" src="demo.js"></script>
+    <script type="text/javascript" src="js/demo.js"></script>
 </head>
 <body>
-    <h1>Ext JS 4 Mp3 Player Demo</h1>
 </body>
 </html>
