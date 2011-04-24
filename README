@@ -28,6 +28,8 @@ Config options: (can be specified as url params, or a URL to a json object)
 
 todo list:
 
+- can't drag window if you click on TrackInfo panel in IE while playing.  Re-rendering the template removes the element, wiping out the event handlers
+- play track on double click
 - allow player to be initialized on Ext.onReady instead of soundManager.onready
 - detect if flash is not installed and show download link
 - implement floating vs inline playlist.
