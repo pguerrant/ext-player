@@ -498,7 +498,8 @@ Ext.define('Xap.Player', {
         return {
             artist: info.TPE1,
             title: info.TIT2,
-            album: info.TALB
+            album: info.TALB,
+            duration: info.TLEN
         };
     },
 
@@ -519,7 +520,9 @@ Ext.define('Xap.Player', {
 
     // private
     onWhileLoading: function(smSound) {
-        this.setTrackDuration(smSound);
+        if(!smSound.id3.TLEN) {
+            this.setTrackDuration(smSound);
+        }
     },
 
     // private
@@ -542,7 +545,7 @@ Ext.define('Xap.Player', {
 
     // private
     updateTrackDurationDisplay: function(duration) {
-        this.trackInfo.set({timeTotal: duration});
+        this.trackInfo.set({duration: duration});
         this.trackSlider.setMaxValue(duration);
     },
 
@@ -552,7 +555,7 @@ Ext.define('Xap.Player', {
             position = this.getCurrentSmSound().position;
         }
         if(!this.isSliderDragging) {
-            this.trackInfo.set({timeElapsed: position});
+            this.trackInfo.set({position: position});
             this.trackSlider.setValue(position);
         }
     },
