@@ -17,6 +17,15 @@ Ext.define('Xap.Player', {
         'Xap.VolumeSlider',
         'Xap.Playlist'
     ],
+    statics: {
+        /**
+         * Used for assigning unique ids to soundManager sound objects
+         * @property autoSid
+         * @type Number
+         * @static
+         */
+        autoSid: 0
+    },
 
     /**
      * @cfg {Number} volume
@@ -270,7 +279,7 @@ Ext.define('Xap.Player', {
             });
         }
         // if we got here "files" is a string referring to a single file url
-        index = me.getTrackIndexById(files);
+        index = me.getTrackIndexByUrl(files);
         if(index === me.currentTrackIndex) {
             // if we're unloading the current track lets move to the next track before we destroy the current one
             me.moveNext();
@@ -477,7 +486,7 @@ Ext.define('Xap.Player', {
             };
 
         return soundManager.createSound({
-            id: url,
+            id: 'xap-sound-' + this.self.autoSid++,
             url: url,
             onload: bind(me.onLoad),
             onid3: bind(me.onId3),
@@ -506,7 +515,7 @@ Ext.define('Xap.Player', {
     // private
     onId3: function(smSound) {
         // save the id3 info to the record in the store
-        var record = this.getTrackById(smSound.sID);
+        var record = this.getTrackByUrl(smSound.url);
         record.set(this.getId3Info(smSound));
         record.commit();
         if(this.isCurrentSmSound(smSound)) {
@@ -534,7 +543,7 @@ Ext.define('Xap.Player', {
     setTrackDuration: function(smSound, isFinal) {
         // in Sound Manager 2 durationEstiamte can be NaN, so fallback to zero if we don't have a duration estimate
         var duration = isFinal ? smSound.duration : smSound.durationEstimate || 0,
-            record = this.getTrackById(smSound.sID);
+            record = this.getTrackByUrl(smSound.url);
 
         record.set({duration: duration});
         record.commit();
@@ -623,12 +632,12 @@ Ext.define('Xap.Player', {
     },
 
     // private
-    getTrackById: function(id) {
+    getTrackByUrl: function(id) {
         return this.store.findRecord('url', id, 0, false, true, true);
     },
 
     // private
-    getTrackIndexById: function(id) {
+    getTrackIndexByUrl: function(id) {
         return this.store.find('url', id, 0, false, true, true);
     },
 
