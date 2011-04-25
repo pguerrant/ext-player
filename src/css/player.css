@@ -55,6 +55,7 @@
     padding: 0;
     border: 0;
     background: transparent;
+    cursor: default;
 }
 
 /*
@@ -280,8 +281,20 @@
  * Tooltips.  Since the tooltip element is a child of the document body, there's no way to
  * make these styles specific to Ext Audio Player.  If there are other components on the
  * same page that use tooltips conflicts may occur.
+ * configuring the slider with a "Ext.slider.Tip" plugin and setting a "cls" on the plugin
+ * is not effective, since the Tip creates an additional element in the dom that does not
+ * get the class applied to it
  */
 .x-tip {
-    background-color: #ececec;
-    border-color: #bec2c4;
+    background-color: #f8f9d7;
+    border: 1px solid #bec2c4;
+}
+/*
+ * temporary solution for corners showing behind slider tip because of shadow element
+ * disabling shadow on Tip doesn't seem to work in Ext 4 beta 3
+ */
+.x-css-shadow {
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
 }

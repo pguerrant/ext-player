@@ -72,7 +72,7 @@ Ext.define('Xap.Player', {
      * True to show playlist at startup
      */
 
-    height: 121,
+    height: 119,
     width: 300,
     cls: 'xap-player',
     layout: 'anchor',

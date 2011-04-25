@@ -67,7 +67,7 @@ Ext.define('Xap.TrackInfo', {
         'Xap.Templates'
     ],
 
-    height: 56,
+    height: 54,
 
     tpl: Xap.Templates.trackInfo,
     cls: 'xap-trackinfo',
@@ -338,7 +338,7 @@ Ext.define('Xap.Player', {
      * True to show playlist at startup
      */
 
-    height: 121,
+    height: 119,
     width: 300,
     cls: 'xap-player',
     layout: 'anchor',
