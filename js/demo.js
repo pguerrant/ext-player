@@ -5,24 +5,25 @@ soundManager.useHTML5Audio = true
 Ext.require('Xap.Player');
 soundManager.onready(function() {
 
-    var player = Ext.create('Xap.Player', {
-        xtype: 'xap.player',
-        //draggable: true,
-        files: [
-            'audio_files/If I Could Fly.mp3',
-            'audio_files/Big Country.mp3', // a song with a pretty long artist name
-            'audio_files/BaytovenGoesCrazy.mp3',
-            'audio_files/Prelude From Suite No. 1 In G Major For Cello Bwv 1007.mp3', // a song with a really long title
-            'audio_files/41.mp3' // a song with a really short title
-        ],
+    var files = [
+        'audio_files/Guarja.mp3',
+        'audio_files/20 Years.mp3',
+        'audio_files/Velcro.mp3',
+        'audio_files/No Answers.mp3',
+        'audio_files/Down In The Valley.mp3',
+        'audio_files/Bluesy Basie.mp3',
+        'audio_files/Deep Air.mp3',
+        'audio_files/Rhythmaron.mp3',
+        'audio_files/Africa Land.mp3'
+    ],
+    player = Ext.create('Xap.Player', {
+        files: files,
         playlistConfig: {
             showTime: true,
             showAlbum: true,
             width: 500
-            //floating: true
         },
         showPlaylist: true
-        //autoPlay: true
     }),
     playerWindow = Ext.create('Xap.Window', {
         id: 'player-window',
@@ -44,20 +45,13 @@ soundManager.onready(function() {
     Ext.create('Ext.container.Viewport', {
         layout: 'fit',
         items: [{
-            xtype: 'tabpanel',
-            items: [
-                {
-                    title: 'Demo',
-                    id: 'demo-tab',
-                    items: [playerWindow]
-                }
-            ]
+            id: 'demo-panel',
+            items: [playerWindow]
         }]
     });
 
     playerWindow.setPosition(50, 50);
     playerWindow.show();
-
 });
 
 
