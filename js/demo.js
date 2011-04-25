@@ -30,7 +30,7 @@ soundManager.onready(function() {
         constrain: true,
         resizable: false,
         width: 300,
-        height: 121,
+        height: 119,
         draggable: {
             delegate: '.xap-player',
             delegateExcludes: '.x-btn, .x-form-item'
