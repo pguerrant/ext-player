@@ -34,17 +34,17 @@ Ext.ns('Xap').Format = {
     }
 };Ext.ns('Xap').Templates = {
     trackInfo: new Ext.XTemplate(
-        '<p class="xap-time-elapsed">{timeElapsed:this.formatTimeElapsed}</p>',
+        '<p class="xap-time-elapsed">{position:this.formatPosition}</p>',
         '<div class="xap-id3">',
             '<p class="xap-artist">{artist:defaultValue("Unknown")}</p>',
             '<p class="xap-title">{title:defaultValue("Unknown")}</p>',
         '</div>',
-        '<p class="xap-time-total">{timeTotal:this.formatTimeTotal}</p>',
+        '<p class="xap-time-total">{duration:this.formatDuration}</p>',
         {
-            formatTimeElapsed: function(value) {
+            formatPosition: function(value) {
                 return Xap.Format.formatTime(value || 0);
             },
-            formatTimeTotal: function(value) {
+            formatDuration: function(value) {
                 return value ? Xap.Format.formatTime(value) : '';
             }
         }
@@ -196,11 +196,11 @@ Ext.define('Xap.Playlist', {
     constructor: function() {
         this.addEvents(
             /**
-             * @event trackSelect
+             * @event trackselect
              * Fired when a track is selected
              * @param {Number} index
              */
-            'trackSelect'
+            'trackselect'
         );
         this.callParent(arguments);
     },
@@ -253,7 +253,7 @@ Ext.define('Xap.Playlist', {
      * Handles a select event on the selection model
      */
     onSelect: function(sm, record, index) {
-        this.fireEvent('trackSelect', index);
+        this.fireEvent('trackselect', index);
     },
 
     /**
@@ -283,6 +283,15 @@ Ext.define('Xap.Player', {
         'Xap.VolumeSlider',
         'Xap.Playlist'
     ],
+    statics: {
+        /**
+         * Used for assigning unique ids to soundManager sound objects
+         * @property autoSid
+         * @type Number
+         * @static
+         */
+        autoSid: 0
+    },
 
     /**
      * @cfg {Number} volume
@@ -444,8 +453,12 @@ Ext.define('Xap.Player', {
                 Ext.apply(me.playlistConfig || {}, {
                     store: me.store,
                     listeners: {
-                        trackSelect: {
-                            fn: me.moveTo,
+                        trackselect: {
+                            fn: me.onPlaylistTrackSelect,
+                            scope: me
+                        },
+                        itemmousedown: {
+                            fn: me.onPlaylistItemMousedown,
                             scope: me
                         }
                     },
@@ -532,7 +545,7 @@ Ext.define('Xap.Player', {
             });
         }
         // if we got here "files" is a string referring to a single file url
-        index = me.getTrackIndexById(files);
+        index = me.getTrackIndexByUrl(files);
         if(index === me.currentTrackIndex) {
             // if we're unloading the current track lets move to the next track before we destroy the current one
             me.moveNext();
@@ -559,12 +572,12 @@ Ext.define('Xap.Player', {
      * Pauses/resumes play of current track
      */
     togglePause: function() {
-        var smSound = this.getCurrentSmSound();
-        if(smSound) {
-            if(smSound.playState === 0 || smSound.paused) {
-                this.play();
+        var me = this;
+        if(me.getCurrentSmSound()) {
+            if(me.isPlaying()) {
+                me.pause();
             } else {
-                this.pause();
+                me.play();
             }
         }
     },
@@ -573,11 +586,12 @@ Ext.define('Xap.Player', {
      * Pauses the currently playing track
      */
     pause: function() {
-        var smSound = this.getCurrentSmSound();
-        if(smSound) {
+        var me = this,
+            smSound = me.getCurrentSmSound();
+        if(me.isPlaying()) {
             smSound.pause();
-            this.playButton.removeCls('xap-pause');
-            this.playButton.addCls('xap-play');
+            me.playButton.removeCls('xap-pause');
+            me.playButton.addCls('xap-play');
         }
     },
 
@@ -585,11 +599,12 @@ Ext.define('Xap.Player', {
      * Plays the current track
      */
     play: function() {
-        var smSound = this.getCurrentSmSound();
-        if(smSound) {
+        var me = this,
+            smSound = me.getCurrentSmSound();
+        if(!me.isPlaying()) {
             smSound.play();
-            this.playButton.removeCls('xap-play');
-            this.playButton.addCls('xap-pause');
+            me.playButton.removeCls('xap-play');
+            me.playButton.addCls('xap-pause');
         }
     },
 
@@ -685,7 +700,7 @@ Ext.define('Xap.Player', {
     moveTo: function(index) {
         var me = this,
             smSound = me.getCurrentSmSound(),
-            isPlaying = smSound && (smSound.playState === 1 && !smSound.paused),
+            isPlaying = me.isPlaying(),
             isMuted = smSound && (smSound.muted),
             prevButton = me.prevButton,
             nextButton = me.nextButton;
@@ -737,7 +752,7 @@ Ext.define('Xap.Player', {
             };
 
         return soundManager.createSound({
-            id: url,
+            id: 'xap-sound-' + this.self.autoSid++,
             url: url,
             onload: bind(me.onLoad),
             onid3: bind(me.onId3),
@@ -758,14 +773,15 @@ Ext.define('Xap.Player', {
         return {
             artist: info.TPE1,
             title: info.TIT2,
-            album: info.TALB
+            album: info.TALB,
+            duration: info.TLEN
         };
     },
 
     // private
     onId3: function(smSound) {
         // save the id3 info to the record in the store
-        var record = this.getTrackById(smSound.sID);
+        var record = this.getTrackByUrl(smSound.url);
         record.set(this.getId3Info(smSound));
         record.commit();
         if(this.isCurrentSmSound(smSound)) {
@@ -779,7 +795,9 @@ Ext.define('Xap.Player', {
 
     // private
     onWhileLoading: function(smSound) {
-        this.setTrackDuration(smSound);
+        if(!smSound.id3.TLEN) {
+            this.setTrackDuration(smSound);
+        }
     },
 
     // private
@@ -791,7 +809,7 @@ Ext.define('Xap.Player', {
     setTrackDuration: function(smSound, isFinal) {
         // in Sound Manager 2 durationEstiamte can be NaN, so fallback to zero if we don't have a duration estimate
         var duration = isFinal ? smSound.duration : smSound.durationEstimate || 0,
-            record = this.getTrackById(smSound.sID);
+            record = this.getTrackByUrl(smSound.url);
 
         record.set({duration: duration});
         record.commit();
@@ -802,7 +820,7 @@ Ext.define('Xap.Player', {
 
     // private
     updateTrackDurationDisplay: function(duration) {
-        this.trackInfo.set({timeTotal: duration});
+        this.trackInfo.set({duration: duration});
         this.trackSlider.setMaxValue(duration);
     },
 
@@ -812,7 +830,7 @@ Ext.define('Xap.Player', {
             position = this.getCurrentSmSound().position;
         }
         if(!this.isSliderDragging) {
-            this.trackInfo.set({timeElapsed: position});
+            this.trackInfo.set({position: position});
             this.trackSlider.setValue(position);
         }
     },
@@ -880,12 +898,12 @@ Ext.define('Xap.Player', {
     },
 
     // private
-    getTrackById: function(id) {
+    getTrackByUrl: function(id) {
         return this.store.findRecord('url', id, 0, false, true, true);
     },
 
     // private
-    getTrackIndexById: function(id) {
+    getTrackIndexByUrl: function(id) {
         return this.store.find('url', id, 0, false, true, true);
     },
 
@@ -904,6 +922,29 @@ Ext.define('Xap.Player', {
             playlistButton.removeCls('xap-arrow-up');
             playlistButton.addCls('xap-arrow-down');
         }
+    },
+
+    // private
+    isPlaying: function() {
+        var smSound = this.getCurrentSmSound();
+        return smSound && smSound.playState === 1 && !smSound.paused;
+    },
+
+    // private
+    onTrackSelect: function(index) {
+        this.moveTo(index);
+        this.play();
+    },
+
+    // private
+    onPlaylistTrackSelect: function(index) {
+        this.moveTo(index);
+    },
+
+    // private
+    onPlaylistItemMousedown: function() {
+        this.getCurrentSmSound().setPosition(0);
+        this.play();
     }
 
 });
